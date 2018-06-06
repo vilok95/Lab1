@@ -98,8 +98,14 @@ object Lab1 extends jsy.util.JsyApplication with jsy.lab1.Lab1Like {
   }
 
 
-  def sqrtErr(c: Double, x0: Double, epsilon: Double): Double = ???
 
+  def sqrtErr(c: Double, x0: Double, epsilon: Double): Double = {
+    require(epsilon >(-1))
+    if (abs((x0*x0)-c)>epsilon){
+      sqrtErr(c,sqrtStep(c,x0),epsilon)
+    }
+    else x0
+  }
   def sqrt(c: Double): Double = {
     require(c >= 0)
     if (c == 0) 0 else sqrtErr(c, 1.0, 0.0001)
