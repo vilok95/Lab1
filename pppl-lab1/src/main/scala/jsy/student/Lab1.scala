@@ -2,6 +2,8 @@ package jsy.student
 
 import jsy.lab1._
 
+import scala.collection.immutable.Stream
+
 object Lab1 extends jsy.util.JsyApplication with jsy.lab1.Lab1Like {
   import jsy.lab1.Parser
   import jsy.lab1.ast._
@@ -75,6 +77,7 @@ object Lab1 extends jsy.util.JsyApplication with jsy.lab1.Lab1Like {
   }
 
   def repeat(s: String, n: Int): String = {
+    require(n>(-1))
     if (n < 1){
       ""
     }
@@ -89,18 +92,17 @@ object Lab1 extends jsy.util.JsyApplication with jsy.lab1.Lab1Like {
 
   def sqrtN(c: Double, x0: Double, n: Int): Double = {
     require(n>(-1))
-    if (n==0){
-      x0
-    }
-    else{
-      sqrtN(c,sqrtStep(c,x0),n-1)
+    n match {
+      case 0 => x0
+      case _ =>sqrtN(c,sqrtStep(c,x0),n-1)
+
     }
   }
 
 
 
   def sqrtErr(c: Double, x0: Double, epsilon: Double): Double = {
-    require(epsilon >(-1))
+    require(epsilon >(0))
     if (abs((x0*x0)-c)>epsilon){
       sqrtErr(c,sqrtStep(c,x0),epsilon)
     }
@@ -154,17 +156,37 @@ object Lab1 extends jsy.util.JsyApplication with jsy.lab1.Lab1Like {
       case Node(Empty, d, r) => (r, d)
       case Node(l, d, r) =>
         val (l1, m) = deleteMin(l)
-        ???
+        l1 match {
+          case Empty => (Node(Empty,d,r),m)
+        }
     }
   }
 
-  def delete(t: SearchTree, n: Int): SearchTree = ???
+  def delete(t: SearchTree, n: Int): SearchTree = t match {
+    case Empty => Empty
+    case Node(Empty,d,Empty) => if (d==n) {Empty} else Node(Empty,d,Empty)
+    case Node(Empty,d,r) => if (n>d) delete(r,n) else Node(Empty,d,r)
+    case Node(l,d,Empty) => if (n<d) delete(l,n) else Node(l,d,Empty)
+    case Node(l,d,r) => {
+      if (n>d) delete(r,n)
+      else if (n<d) delete(l,n)
+      else (n==d)
+
+  }
 
   /* JavaScripty */
 
   def eval(e: Expr): Double = e match {
-    case N(n) => ???
-    case _ => ???
+    case N(n) => n
+    case Unary(uop,e1) => uop match {
+      case Neg => -eval(e1)
+    }
+    case Binary(bop,e1,e2) => bop match{
+      case Plus => eval(e1) + eval(e2)
+      case Minus => eval(e1) - eval(e2)
+      case Times => eval(e1) * eval(e2)
+      case Div => eval(e1) / eval(e2)
+    }
   }
 
  // Interface to run your interpreter from a string.  This is convenient
