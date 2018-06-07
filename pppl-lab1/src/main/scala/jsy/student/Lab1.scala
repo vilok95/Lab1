@@ -170,7 +170,12 @@ object Lab1 extends jsy.util.JsyApplication with jsy.lab1.Lab1Like {
     case Node(l,d,r) => {
       if (n>d) delete(r,n)
       else if (n<d) delete(l,n)
-      else (n==d)
+      else if (n==d) {
+        val (l1,m) = deleteMin(r)
+        Node(l,m,l1)
+      }
+
+    }
 
   }
 
