@@ -122,12 +122,31 @@ object Lab1 extends jsy.util.JsyApplication with jsy.lab1.Lab1Like {
   def repOk(t: SearchTree): Boolean = {
     def check(t: SearchTree, min: Int, max: Int): Boolean = t match {
       case Empty => true
-      case Node(l, d, r) => ???
+      case Node(l, d, r) => {
+        if (d < min || d > max){
+          false
+        }
+        else {
+          check(l,min,d) && check(r,d,max)
+        }
+      }
     }
     check(t, Int.MinValue, Int.MaxValue)
   }
 
-  def insert(t: SearchTree, n: Int): SearchTree = ???
+  def insert(t: SearchTree, n: Int): SearchTree = { t match {
+    case Empty => Node(Empty,n,Empty)
+    case Node(l,d,r) => {
+      if (n<d){
+        Node(insert(l,n),d,r)
+      }
+      else {
+        Node(l,d,insert(r,n))
+      }
+    }
+  }
+
+  }
 
   def deleteMin(t: SearchTree): (SearchTree, Int) = {
     require(t != Empty)
